@@ -29,3 +29,8 @@ NEW_MINIMUM_PROTOCOL_VERSION = 3301
 SEGWIT_ACTIVATION_VERSION = 33
 BLOCK_MAX_SIZE = 1000000
 BLOCK_MAX_WEIGHT = 4000000
+# You can enable push notifications thru pushover.net
+USE_PUSHOVER_BLOCK = False #Change to true only if you have added your token and key below
+USE_PUSHOVER_SHARE = False #Change to true only if you have added your token and key below
+PUSHOVER_APP_TOKEN = 'ADD YOUR APP TOKEN HERE'
+PUSHOVER_USER_KEY = 'ADD YOUR USER KEY HERE'
