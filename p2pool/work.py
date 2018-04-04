@@ -6,6 +6,8 @@ import random
 import re
 import sys
 import time
+import httplib
+import urllib
 
 from twisted.internet import defer
 from twisted.python import log
@@ -395,6 +397,16 @@ class WorkerBridge(worker_interface.WorkerBridge):
                         print
                         print 'GOT BLOCK FROM MINER! Passing to bitcoind! %s%064x' % (self.node.net.PARENT.BLOCK_EXPLORER_URL_PREFIX, header_hash)
                         print
+                        # Code to send pushover notification when a block is found by a miner (ikolubr - Mar 31st, 2018)
+                        if self.node.net.USE_PUSHOVER_BLOCK:
+                            conn = httplib.HTTPSConnection("api.pushover.net:443")
+                            conn.request("POST", "/1/messages.json",
+                                urllib.urlencode({
+                                    "token": self.node.net.PUSHOVER_APP_TOKEN,
+                                    "user": self.node.net.PUSHOVER_USER_KEY,
+                                    "message": 'FOUND SHARE! %s' % (user),
+                                }), { "Content-type": "application/x-www-form-urlencoded" })
+                            conn.getresponse()
             except:
                 log.err(None, 'Error while processing potential block:')
             
@@ -443,6 +455,18 @@ class WorkerBridge(worker_interface.WorkerBridge):
                     time.time() - getwork_time,
                     ' DEAD ON ARRIVAL' if not on_time else '',
                 )
+                
+                # Code to send pushover notification when a share is found by a miner (ikolubr - Mar 31st, 2018)
+                if self.node.net.USE_PUSHOVER_SHARE:
+                    conn = httplib.HTTPSConnection("api.pushover.net:443")
+                    conn.request("POST", "/1/messages.json",
+                    urllib.urlencode({
+                        "token": self.node.net.PUSHOVER_APP_TOKEN,
+                        "user": self.node.net.PUSHOVER_USER_KEY,
+                        "message": 'FOUND SHARE! %s' % (user),
+                    }), { "Content-type": "application/x-www-form-urlencoded" })
+                    conn.getresponse()
+                    
                 self.my_share_hashes.add(share.hash)
                 if not on_time:
                     self.my_doa_share_hashes.add(share.hash)
