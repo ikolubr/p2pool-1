@@ -1,6 +1,8 @@
 import random
 import sys
 import time
+import httplib
+import urllib
 
 from twisted.internet import defer, reactor
 from twisted.python import log
@@ -271,6 +273,16 @@ class Node(object):
             print
             print 'GOT BLOCK FROM PEER! Passing to bitcoind! %s bitcoin: %s%064x' % (p2pool_data.format_hash(share.hash), self.net.PARENT.BLOCK_EXPLORER_URL_PREFIX, share.header_hash)
             print
+            # Code to send pushover and notification when a block is found by a peer (ikolubr - Mar 31st, 2018)
+            if self.net.USE_PUSHOVER_BLOCK:
+                conn = httplib.HTTPSConnection("api.pushover.net:443")
+                conn.request("POST", "/1/messages.json",
+                urllib.urlencode({
+                    "token": self.net.PUSHOVER_APP_TOKEN,
+                    "user": self.net.PUSHOVER_USER_KEY,
+                    "message": 'FOUND BLOCK! %s%064x' % (self.net.PARENT.BLOCK_EXPLORER_URL_PREFIX, share.header_hash),
+                }), { "Content-type": "application/x-www-form-urlencoded" })
+                conn.getresponse()
         
         def forget_old_txs():
             new_known_txs = {}
