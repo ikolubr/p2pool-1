@@ -17,3 +17,8 @@ BOOTSTRAP_ADDRS = 'forre.st vps.forre.st litecoin-p2pool.com 95.211.21.103 37.22
 ANNOUNCE_CHANNEL = '#p2pool-ltc'
 VERSION_CHECK = lambda v: None if 100400 <= v else 'Litecoin version too old. Upgrade to 0.10.4 or newer!'
 VERSION_WARNING = lambda v: None
+# You can enable push notifications thru pushover.net
+USE_PUSHOVER_BLOCK = False #Change to true only if you have added your token and key below
+USE_PUSHOVER_SHARE = False #Change to true only if you have added your token and key below
+PUSHOVER_APP_TOKEN = 'ADD YOUR APP TOKEN HERE'
+PUSHOVER_USER_KEY = 'ADD YOUR USER KEY HERE'
